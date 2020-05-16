@@ -11,36 +11,21 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TaskManager.Services;
 using TaskManagerAPIGateway.GraphQL;
+using TaskManagerAPIGateway.Helpers;
 
 namespace TaskManagerAPIGateway.Controllers
 {
-    [Route("graphql")]
+    [Route("graphql/{apiName}")]
     public class GraphQLController: Controller
     {
-        private GraphQLService.GraphQLServiceClient _client = null;
-
-        protected GraphQLService.GraphQLServiceClient Client
+        public async Task<IActionResult> Post(string apiName, [FromBody] GraphQLQuery query)
         {
-            get
-            {
-                if (_client == null)
-                {
-                    var channel = GrpcChannel.ForAddress("https://localhost:5001");
-                    _client = new GraphQLService.GraphQLServiceClient(channel);
-                }
+            var client = GrpcClientPool.CreateInstance(apiName);
 
-                return _client;
-            }
-        }
-
-        public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
-        {
             var request = new Request
             {
                 Query = query.Query,
             };
-
-           
 
             if (query.Variables != null)
             {
@@ -48,7 +33,8 @@ namespace TaskManagerAPIGateway.Controllers
                 var jsonInput = JsonConvert.SerializeObject(inputs);
                 request.Inputs = jsonInput;
             }
-            var result = Client.Execute(request);
+
+            var result = client.Execute(request);
             var data = String.Empty;
             await foreach (var response in result.ResponseStream.ReadAllAsync())
             {

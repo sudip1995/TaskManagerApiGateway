@@ -1,0 +1,11 @@
+{
+  "routes": [
+    {
+      "apiName": "task-manager",
+      "destination": {
+        "url": "https://localhost:5001",
+        "requiresAuthentication": false
+      }
+    }
+  ]
+}
