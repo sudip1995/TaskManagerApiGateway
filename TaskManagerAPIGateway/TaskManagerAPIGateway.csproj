@@ -4,4 +4,16 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="GraphQL" Version="2.4.0" />
+    <PackageReference Include="GraphQL.Server.Ui.Playground" Version="3.4.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.23.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="G:\TaskManager\TaskManager\Protos\graphql.proto" GrpcServices="Client">
+      <Link>Protos\graphql.proto</Link>
+    </Protobuf>
+  </ItemGroup>
+
 </Project>
